@@ -39,7 +39,7 @@ An end-to-end Machine Learning application that predicts the outcomes of interna
     streamlit run world_cup_prediction.py
     ```
 
-## 📊 Model Logic
+## Model Logic
 
 The model uses a **diff-based approach**:
 1.  **Elo Calculation:** Updates team ratings after every historical match.
