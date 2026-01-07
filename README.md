@@ -9,9 +9,9 @@ An end-to-end Machine Learning application that predicts the outcomes of interna
 * **Dynamic Elo System:** Calculates real-time team strength ratings based on historical match performance (1872–Present).
 * **Machine Learning Model:** Uses an XGBoost Classifier to predict Win/Draw/Loss probabilities.
 * **Interactive Simulation:**
-    * **Head-to-Head:** Detailed Results for any hypothetical matchup.
+    * **Head-to-Head:** Results for any hypothetical matchup.
     * **2022 Replay:** Re-run the 2022 World Cup to see how the AI's predictions differ from reality.
-    * **Custom Bracket:** Build your own "What-If" tournament scenarios (e.g., Round of 16).
+    * **Custom Bracket:** Build your own "What-If" tournament scenarios for Round of 16
 
 ## 🛠️ Tech Stack
 
