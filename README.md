@@ -13,7 +13,7 @@ An end-to-end Machine Learning application that predicts the outcomes of interna
     * **2022 Replay:** Re-run the 2022 World Cup to see how the AI's predictions differ from reality.
     * **Custom Bracket:** Build your own "What-If" tournament scenarios for Round of 16
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 * **Python 3.9+**
 * **Streamlit** (Web Interface)
@@ -21,7 +21,7 @@ An end-to-end Machine Learning application that predicts the outcomes of interna
 * **Pandas & NumPy** (Data Manipulation)
 * **Scikit-Learn** (Label Encoding)
 
-## 📦 How to Run Locally
+## How to Run Locally
 
 1.  **Clone the repository:**
     ```bash
