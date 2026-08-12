@@ -1,0 +1,39 @@
+[ratings]
+base_rating = 1500.0
+elo_k_default = 30
+attack_defense_k = 8.0
+elo_divisor = 600
+goals_divisor = 400
+rating_diff_clip = 600
+expected_goals_clip_min = 0.15
+expected_goals_clip_max = 6.0
+
+[model]
+n_estimators = 200
+max_depth = 4
+learning_rate = 0.05
+random_seed = 42
+
+[dixon_coles]
+xi = 0.00038          # recency half-life = ln(2)/xi days ~= 5 years
+reg_lambda = 0.01
+min_effective_weight = 5.0
+max_goals = 10
+maxiter = 2000
+maxfun = 20000
+
+[evaluation]
+holdout_start_date = "2016-01-01"
+calibration_bins = 10
+random_seed = 42
+
+[markets]
+kelly_fraction_cap = 0.25   # fractional Kelly multiplier ceiling, simulation only
+
+[competitions.world_cup]
+name = "FIFA World Cup"
+format = "knockout"
+results_csv = "results.csv"
+
+[competitions.world_cup.elo_k_overrides]
+"FIFA World Cup" = 60

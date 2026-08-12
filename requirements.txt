@@ -1,5 +1,9 @@
-streamlit
+fastapi
+uvicorn[standard]
 pandas
 numpy
 xgboost
 scikit-learn
+scipy
+matplotlib
+requests
