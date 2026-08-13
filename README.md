@@ -13,6 +13,7 @@ core runs on any competition; the World Cup is the current showcase, not a hardc
 
 - [What's here](#whats-here)
 - [How to run locally](#how-to-run-locally)
+- [Deployment](#deployment-free)
 - [Methodology](#methodology)
   - [1. Rating engine](#1-rating-engine-walk-forward-no-lookahead)
   - [2. Two independent models](#2-two-independent-models)
@@ -113,6 +114,54 @@ pip install -r requirements-dev.txt   # adds pytest
 pytest                                 # 81 tests
 python3 scripts/run_backtest.py        # writes reports/backtest_metrics.json + calibration_curve.png
 ```
+
+## Deployment (free)
+
+The frontend and backend deploy to **two different platforms**, on purpose — not because that's
+fancier, but because this backend does real work at process startup (walk-forward ratings over 48k
+matches, an XGBoost fit, an MLE Dixon-Coles fit) and two endpoints read/write local files
+(`/api/scorecard`, `/api/market/snapshot`). That's a bad fit for per-invocation serverless functions
+(Vercel's Python runtime rebuilds the whole app from its entrypoint on every cold start, and gives
+serverless functions an ephemeral filesystem) — but a good fit for a platform that keeps one process
+warm with a real disk.
+
+| Piece | Platform | Why | Cost |
+|---|---|---|---|
+| `frontend/` (Vite/React) | [Vercel](https://vercel.com) | Best-in-class for static/SPA builds — this is what Vercel is actually for | Free, no card |
+| `backend/` (FastAPI) | [Render](https://render.com) | A real long-running process with a persistent-while-running disk, not per-request serverless | Free, no card (750 instance-hrs/month) |
+
+### Backend on Render
+
+`render.yaml` at the repo root is a Render Blueprint — Render detects it automatically when you connect
+the repo:
+
+1. [dashboard.render.com](https://dashboard.render.com) → **New** → **Blueprint** → connect this repo.
+2. Render reads `render.yaml`: installs `requirements.txt`, runs `scripts/run_backtest.py` as a
+   pre-deploy step (so `/api/scorecard` has a real report from the moment the service is live, instead
+   of 404ing until someone runs it manually), then starts `uvicorn backend.main:app` bound to Render's
+   assigned `$PORT`.
+3. Deploys to `https://worldcup-ai-backend.onrender.com` (Render appends a random suffix instead only
+   if that exact name is already taken by someone else — check the dashboard for the actual URL either way).
+
+**Free-tier tradeoffs, stated plainly:**
+- The service **spins down after 15 minutes of no traffic** and takes about a minute to wake back up on
+  the next request — the first hit after idle time will be slow, not broken.
+- Local disk (`data/odds_snapshots.jsonl`) persists **while the instance is warm**, but resets on
+  spin-down/redeploy. Fine for demoing the Market Edge flow in one sitting; not durable storage.
+
+### Frontend on Vercel
+
+1. [vercel.com/new](https://vercel.com/new) → import this repo → set **Root Directory** to `frontend`
+   (this repo isn't a single-app layout, so Vercel needs to be told where the Vite app actually is).
+2. Framework preset auto-detects as Vite; build/output settings need no overrides.
+3. `frontend/.env.production` already points `VITE_API_BASE` at the Render URL above — Vite bakes it
+   into the build, so no manual environment variable entry is required in the Vercel dashboard. If
+   Render assigned a different URL than predicted (see above), update that one line and redeploy.
+
+### Everything reproducible from git
+
+Both `render.yaml` and `frontend/.env.production` are committed, not clicked together in a dashboard —
+cloning this repo and connecting it to Render + Vercel is the entire deploy process.
 
 ## Methodology
 
