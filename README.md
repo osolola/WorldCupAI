@@ -1,5 +1,13 @@
 # World Cup AI: A Calibrated, Market-Benchmarked Soccer Forecasting System
 
+![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-backend-009688?logo=fastapi&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
+![XGBoost](https://img.shields.io/badge/XGBoost-gradient--boosted-EB0028)
+![SciPy](https://img.shields.io/badge/SciPy-MLE%20optimization-8CAAE6?logo=scipy&logoColor=white)
+![Tests](https://img.shields.io/badge/tests-81%20passing-brightgreen)
+![License](https://img.shields.io/badge/license-MIT-blue)
+
 A probabilistic soccer match/tournament forecasting system, built to be defensible in a technical
 interview: two independently-derived models scored against naive baselines on a proper chronological
 holdout, calibration measured (not assumed), Monte Carlo tournament simulation with confidence
@@ -9,9 +17,41 @@ detection, closing-line value, and simulation-only Kelly staking.
 It started as a World Cup bracket toy. It's now a general-purpose engine — the same rating/modeling
 core runs on any competition; the World Cup is the current showcase, not a hardcoded assumption.
 
+## Screenshots
+
+**Head-to-Head** — win/draw/loss probabilities, symmetrized so a "neutral" prediction doesn't depend on
+which team you type first, with each side's live Elo/Attack/Defense ratings.
+
+![Head-to-Head prediction](docs/screenshots/01-head-to-head.png)
+
+**Scoreline** — the Dixon-Coles goals model in action: expected goals per side and the full most-likely-scoreline
+distribution, not just a win/draw/loss split.
+
+![Predicted scoreline distribution](docs/screenshots/02-scoreline.png)
+
+**Tournament Odds** — thousands of Monte Carlo simulations of the actual 2026 bracket, producing title
+odds *with 95% confidence intervals* instead of one deterministic bracket walk.
+
+![Monte Carlo tournament odds with confidence intervals](docs/screenshots/03-tournament-odds.png)
+
+**Market Edge** — paste bookmaker or Polymarket odds, get them de-vigged (Shin's method), compared
+against the model, and sized into a simulation-only fractional-Kelly stake.
+
+![Market edge and Kelly stake sizing](docs/screenshots/04-market-edge.png)
+
+**Scorecard** — the backtest, in the app: every model vs. every baseline on Brier score, log loss, and
+calibration error, plus each model's biggest misses on purpose.
+
+![Backtest scorecard with biggest misses](docs/screenshots/05-scorecard.png)
+
+**Bracket Replay** — full knockout simulation, round by round, with a live champion call.
+
+![2022 World Cup bracket replay](docs/screenshots/06-bracket-replay.png)
+
 ## Table of Contents
 
 - [What's here](#whats-here)
+- [Tech stack](#tech-stack)
 - [How to run locally](#how-to-run-locally)
 - [Deployment](#deployment-free)
 - [Methodology](#methodology)
@@ -44,6 +84,20 @@ core runs on any competition; the World Cup is the current showcase, not a hardc
   betting, no auto-execution, anywhere.
 * **81 unit tests**, a `config.toml` with every tunable parameter and a fixed random seed, and a
   one-command script (`scripts/run_backtest.py`) that regenerates every metric in this document.
+
+## Tech Stack
+
+**Backend:** Python, FastAPI, XGBoost, SciPy (MLE optimization + root-finding), pandas/NumPy,
+scikit-learn (baseline model), pytest.
+
+**Frontend:** React 19, Vite, plain CSS (no component library) — a 7-tab dashboard: Head-to-Head,
+Scoreline, Tournament Odds, Market Edge, Scorecard, plus the original Bracket Replay and Custom Bracket
+tools.
+
+**Data:** 48,891 international match results (1872–present), the live Polymarket Gamma API, and a
+manual odds-entry pipeline for bookmaker lines.
+
+**Deployment:** Vercel (frontend) + Render (backend), both free — see [Deployment](#deployment-free).
 
 ## Project Structure
 
@@ -83,10 +137,12 @@ frontend/
     api.js              # fetch wrapper for every backend endpoint
     App.jsx               # tab navigation
     components/            # Head-to-Head, Scoreline, Tournament Odds, Market Edge, Scorecard, ...
+docs/screenshots/  # README screenshots
 config.toml     # every rating/model/evaluation/market hyperparameter, one place
 results.csv     # 48,891 international match results, 1872-present
 data/           # odds_snapshots.jsonl (created on first manual odds entry)
 reports/        # backtest_metrics.json + calibration_curve.png (generated, gitignored)
+render.yaml     # backend deploy config (Render Blueprint)
 ```
 
 ## How to Run Locally
