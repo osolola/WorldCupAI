@@ -3,8 +3,7 @@ services:
     name: worldcup-ai-backend
     runtime: python
     plan: free
-    buildCommand: pip install -r requirements.txt
-    preDeployCommand: python3 scripts/run_backtest.py
+    buildCommand: pip install -r requirements.txt && python3 scripts/run_backtest.py
     startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION

@@ -192,9 +192,11 @@ warm with a real disk.
 the repo:
 
 1. [dashboard.render.com](https://dashboard.render.com) → **New** → **Blueprint** → connect this repo.
-2. Render reads `render.yaml`: installs `requirements.txt`, runs `scripts/run_backtest.py` as a
-   pre-deploy step (so `/api/scorecard` has a real report from the moment the service is live, instead
-   of 404ing until someone runs it manually), then starts `uvicorn backend.main:app` bound to Render's
+2. Render reads `render.yaml`: installs `requirements.txt`, runs `scripts/run_backtest.py` as part of
+   the build step (so `/api/scorecard` has a real report from the moment the service is live, instead
+   of 404ing until someone runs it manually — `preDeployCommand` would be the more semantically correct
+   place for this, but it's a paid-tier-only Render feature), then starts `uvicorn backend.main:app`
+   bound to Render's
    assigned `$PORT`.
 3. Deploys to `https://worldcup-ai-backend.onrender.com` (Render appends a random suffix instead only
    if that exact name is already taken by someone else — check the dashboard for the actual URL either way).
