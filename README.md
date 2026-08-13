@@ -198,8 +198,10 @@ the repo:
    place for this, but it's a paid-tier-only Render feature), then starts `uvicorn backend.main:app`
    bound to Render's
    assigned `$PORT`.
-3. Deploys to `https://worldcup-ai-backend.onrender.com` (Render appends a random suffix instead only
-   if that exact name is already taken by someone else — check the dashboard for the actual URL either way).
+3. Deploys to a Render-assigned URL — normally `https://worldcup-ai-backend.onrender.com`, but Render
+   appends a random suffix if that exact name is already taken by someone else (it was, here: the live
+   backend is at `https://worldcup-ai-backend-ss1p.onrender.com`). Check the dashboard for the actual
+   URL and make sure it matches `frontend/.env.production`.
 
 **Free-tier tradeoffs, stated plainly:**
 - The service **spins down after 15 minutes of no traffic** and takes about a minute to wake back up on
